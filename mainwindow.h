@@ -13,6 +13,7 @@ using std::string; using std::stod;
 #include <QMessageBox>
 
 #include <fieldchecker.h>
+#include <filereader.h>
 
 namespace Ui {
 class MainWindow;

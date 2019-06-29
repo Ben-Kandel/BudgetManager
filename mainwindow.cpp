@@ -16,7 +16,16 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->loadButton, SIGNAL(clicked()), ui->loadButton, SLOT(ButtonClicked()));
     connect(ui->loadButton, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
 
-    connect(ui->budgetEdit, SIGNAL(editingFinished()), ui->budgetEdit, SLOT(EditingFinished()));
+    connect(ui->loadHelp, SIGNAL(clicked()), ui->loadHelp, SLOT(ButtonClicked()));
+    connect(ui->loadHelp, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
+
+    connect(ui->saveButton, SIGNAL(clicked()), ui->saveButton, SLOT(ButtonClicked()));
+    connect(ui->saveButton, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
+
+    connect(ui->saveHelp, SIGNAL(clicked()), ui->saveHelp, SLOT(ButtonClicked()));
+    connect(ui->saveHelp, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
+
+    connect(ui->budgetEdit, SIGNAL(returnPressed()), ui->budgetEdit, SLOT(EditingFinished()));
     connect(ui->budgetEdit, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
 }
 
@@ -64,6 +73,27 @@ void MainWindow::DoSomething(QObject* sender){
         //for now, we are having this print out the list.
         qDebug() << "Printing Items: ";
         PrintItems();
+        //also, we might want to remove this button in the future.
+        //and just have this happen when the program starts up...
+        //and then maybe replace this button with a button that
+        //allows the user to change the directory they are looking in.
+        //we should allow importing from another file.
+        FileReader fr;
+        fr.ReadFile();
+        vector<Entry*> stuff = fr.GetLines();
+        //items.insert(items.end(), stuff.begin(), stuff.end());
+        for(Entry* x : stuff){
+            AddItem(x);
+        }
+    }
+    if(sender == ui->loadHelp){
+        QMessageBox mb;
+        mb.setText("BudgetManager is able to load from an excel file you "
+                   "provide in the directory. Please include a header line, "
+                   "with 'Name', 'Price', and 'Date' (do not include any extra punctuation.) over the columns "
+                   "containing this information. BudgetManager will ignore any data in a column that does not "
+                   "have a correct header.");
+        mb.exec();
     }
     if(sender == ui->budgetEdit){
         qDebug() << "editing finished";
@@ -106,7 +136,6 @@ void MainWindow::PrintItems(){
 
 void MainWindow::AddToTable(){
     //so we just added an item to the table. do the indices in the vector correspond to the indices in the table. they should.
-    //ui->entryTable.setite
     //so we need to take our vector that contains three things, and put them in the currentRow, price in column 0, date in column 1, and name in
     //column 3
     ui->entryTable->setRowCount(currentRow+1);

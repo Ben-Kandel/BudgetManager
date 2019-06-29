@@ -31,7 +31,8 @@ SOURCES += \
     newentrywindow.cpp \
     button.cpp \
     customlineedit.cpp \
-    fieldchecker.cpp
+    fieldchecker.cpp \
+    filereader.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -39,7 +40,8 @@ HEADERS += \
     newentrywindow.h \
     button.h \
     customlineedit.h \
-    fieldchecker.h
+    fieldchecker.h \
+    filereader.h
 
 FORMS += \
         mainwindow.ui \
