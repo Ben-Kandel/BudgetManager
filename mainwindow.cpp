@@ -85,6 +85,7 @@ void MainWindow::DoSomething(QObject* sender){
         for(Entry* x : stuff){
             AddItem(x);
         }
+        ui->loadButton->setEnabled(false);
     }
     if(sender == ui->loadHelp){
         QMessageBox mb;
