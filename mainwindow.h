@@ -11,6 +11,7 @@ using std::cout; using std::endl;
 #include <string>
 using std::string; using std::stod;
 #include <QMessageBox>
+#include <QSettings>
 
 #include <fieldchecker.h>
 #include <filereader.h>
@@ -37,6 +38,7 @@ private:
     void SetupTable();
     NewEntryWindow* x = nullptr;
     vector<Entry*> items;
+    QSettings* settings;
     void PrintItems();
     int currentRow;
     void AddToTable();
@@ -44,6 +46,10 @@ private:
     double remainingBudget;
     void UpdateLabel(double r);
     void CalculateRemaining();
+    FileReader fr;
+    virtual void closeEvent(QCloseEvent *event);
+    void WriteSettings();
+    QString ReadSettings();
 };
 
 #endif // MAINWINDOW_H

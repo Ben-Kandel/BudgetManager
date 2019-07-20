@@ -8,8 +8,13 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    settings = new QSettings("BenK", "BudgetManager");
+
     SetupTable();
     totalBudget = 0;
+    fr.UpdateFilePath(ReadSettings());
+    ui->filePathEdit->setText(ReadSettings());
+
     connect(ui->entryButton, SIGNAL(clicked()), ui->entryButton, SLOT(ButtonClicked()));
     connect(ui->entryButton, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
 
@@ -27,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->budgetEdit, SIGNAL(returnPressed()), ui->budgetEdit, SLOT(EditingFinished()));
     connect(ui->budgetEdit, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
+
+    connect(ui->filePathEdit, SIGNAL(returnPressed()), ui->filePathEdit, SLOT(EditingFinished()));
+    connect(ui->filePathEdit, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
 }
 
 MainWindow::~MainWindow()
@@ -34,6 +42,7 @@ MainWindow::~MainWindow()
     for(Entry* e : items){
         free(e);
     }
+    WriteSettings();
     delete ui;
 }
 
@@ -72,13 +81,12 @@ void MainWindow::DoSomething(QObject* sender){
     if(sender == ui->loadButton){
         //for now, we are having this print out the list.
         qDebug() << "Printing Items: ";
-        PrintItems();
+        //PrintItems();
         //also, we might want to remove this button in the future.
         //and just have this happen when the program starts up...
         //and then maybe replace this button with a button that
         //allows the user to change the directory they are looking in.
         //we should allow importing from another file.
-        FileReader fr;
         fr.ReadFile();
         vector<Entry*> stuff = fr.GetLines();
         //items.insert(items.end(), stuff.begin(), stuff.end());
@@ -93,7 +101,9 @@ void MainWindow::DoSomething(QObject* sender){
                    "provide in the directory. Please include a header line, "
                    "with 'Name', 'Price', and 'Date' (do not include any extra punctuation.) over the columns "
                    "containing this information. BudgetManager will ignore any data in a column that does not "
-                   "have a correct header.");
+                   "have a correct header. You can update the file path in the text box in the bottom left. "
+                   "Simply go to the folder containing the file 'budgetmanager.csv', and paste the path into the box. "
+                   "Do not add anything to the end.");
         mb.exec();
     }
     if(sender == ui->budgetEdit){
@@ -109,6 +119,11 @@ void MainWindow::DoSomething(QObject* sender){
         }
         //UpdateLabel(totalBudget);
         //CalculateRemaining();
+    }
+    if(sender == ui->filePathEdit){
+        //in the future, we could have this save the file path so we can remember it, but...
+        //let's get it to work for now.
+        fr.UpdateFilePath(ui->filePathEdit->text());
     }
 }
 
@@ -167,4 +182,18 @@ void MainWindow::CalculateRemaining(){
     }
     remainingBudget = totalBudget - sum;
     UpdateLabel(remainingBudget);
+}
+
+void MainWindow::closeEvent(QCloseEvent *event){
+    qDebug() << "closing the main window. writing settings.";
+    WriteSettings();
+    event->accept(); //still close the window.
+}
+
+void MainWindow::WriteSettings(){
+    settings->setValue("path", fr.GetFilePath());
+}
+
+QString MainWindow::ReadSettings(){
+    return settings->value("path").toString();
 }

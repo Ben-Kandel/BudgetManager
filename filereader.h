@@ -22,6 +22,8 @@ public:
     FileReader() = default;
     bool ReadFile();
     vector<Entry*> GetLines();
+    void UpdateFilePath(QString s);
+    QString GetFilePath() const;
 private:
     size_t price_;
     size_t name_;
@@ -30,6 +32,7 @@ private:
     vector<Entry*> lines_;
     Entry* ConvertToEntry(QString);
     void PrintLines();
+    QString backPath;
 };
 
 #endif // FILEREADER_H
