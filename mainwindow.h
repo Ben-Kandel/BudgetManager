@@ -49,7 +49,7 @@ private:
     FileReader fr;
     virtual void closeEvent(QCloseEvent *event);
     void WriteSettings();
-    QString ReadSettings();
+    void ReadSettings();
 };
 
 #endif // MAINWINDOW_H

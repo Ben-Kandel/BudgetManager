@@ -12,8 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     SetupTable();
     totalBudget = 0;
-    fr.UpdateFilePath(ReadSettings());
-    ui->filePathEdit->setText(ReadSettings());
+    ReadSettings();
+    //fr.UpdateFilePath(ReadSettings());
+    //ui->filePathEdit->setText(ReadSettings());
 
     connect(ui->entryButton, SIGNAL(clicked()), ui->entryButton, SLOT(ButtonClicked()));
     connect(ui->entryButton, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
@@ -192,8 +193,14 @@ void MainWindow::closeEvent(QCloseEvent *event){
 
 void MainWindow::WriteSettings(){
     settings->setValue("path", fr.GetFilePath());
+    settings->setValue("totalbudget", totalBudget);
 }
 
-QString MainWindow::ReadSettings(){
-    return settings->value("path").toString();
+void MainWindow::ReadSettings(){
+    //updating the file path:
+    fr.UpdateFilePath(settings->value("path").toString());
+    ui->filePathEdit->setText(settings->value("path").toString());
+    //updating the total budget:
+    totalBudget = settings->value("totalbudget").toDouble();
+    ui->budgetEdit->setText(QString::number(totalBudget));
 }
