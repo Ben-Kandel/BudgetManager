@@ -15,6 +15,7 @@ using std::string; using std::stod;
 
 #include <fieldchecker.h>
 #include <filereader.h>
+#include <filewriter.h>
 
 namespace Ui {
 class MainWindow;
@@ -50,6 +51,8 @@ private:
     virtual void closeEvent(QCloseEvent *event);
     void WriteSettings();
     void ReadSettings();
+    vector<Entry*> saveItems;
+    FileWriter fw;
 };
 
 #endif // MAINWINDOW_H

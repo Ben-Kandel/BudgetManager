@@ -6,15 +6,15 @@ Entry::Entry(string p, string n, string d){
     date_ = d;
 }
 
-string Entry::GetDate() const{
+string Entry::GetDate(){
     return date_;
 }
 
-string Entry::GetName() const{
+string Entry::GetName(){
     return name_;
 }
 
-string Entry::GetPrice() const{
+string Entry::GetPrice(){
     return price_;
 }
 

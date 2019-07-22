@@ -13,8 +13,6 @@ MainWindow::MainWindow(QWidget *parent) :
     SetupTable();
     totalBudget = 0;
     ReadSettings();
-    //fr.UpdateFilePath(ReadSettings());
-    //ui->filePathEdit->setText(ReadSettings());
 
     connect(ui->entryButton, SIGNAL(clicked()), ui->entryButton, SLOT(ButtonClicked()));
     connect(ui->entryButton, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
@@ -56,41 +54,30 @@ void MainWindow::SetupTable(){
     ui->entryTable->verticalHeader()->setVisible(false);
     ui->entryTable->horizontalHeader()->setStretchLastSection(true);
     currentRow = 0;
+    ui->entryTable->setEditTriggers(QAbstractItemView::NoEditTriggers);
 }
 
 void MainWindow::DoSomething(QObject* sender){
     if(sender == ui->entryButton){
         //we want to open up a new window.
-        //qDebug() << "we clicked on entry button.";
         if(x == nullptr){
-            //qDebug() << "making new window";
             x = new NewEntryWindow();
             x->show();
             connect(x, SIGNAL(iChanged(QObject*)), this, SLOT(DoSomething(QObject*)));
             connect(x, SIGNAL(FinishOrCancel(bool)), this, SLOT(PotentialEntry(bool)));
         }else{
             //we already have a window open. just bring it to the front.
-            x->show();
+            x->show(); //not sure if all of these are necessary, but im doing it anyway
             x->raise();
             x->activateWindow();
         }
     }
     if(sender == x){
-        //qDebug() << "we received a signal from the window.";
         x = nullptr;
     }
     if(sender == ui->loadButton){
-        //for now, we are having this print out the list.
-        qDebug() << "Printing Items: ";
-        //PrintItems();
-        //also, we might want to remove this button in the future.
-        //and just have this happen when the program starts up...
-        //and then maybe replace this button with a button that
-        //allows the user to change the directory they are looking in.
-        //we should allow importing from another file.
         fr.ReadFile();
         vector<Entry*> stuff = fr.GetLines();
-        //items.insert(items.end(), stuff.begin(), stuff.end());
         for(Entry* x : stuff){
             AddItem(x);
         }
@@ -100,15 +87,34 @@ void MainWindow::DoSomething(QObject* sender){
         QMessageBox mb;
         mb.setText("BudgetManager is able to load from an excel file you "
                    "provide in the directory. Please include a header line, "
-                   "with 'Name', 'Price', and 'Date' (do not include any extra punctuation.) over the columns "
+                   "with 'Name', 'Price', and 'Date' (do not include any extra punctuation) over the columns "
                    "containing this information. BudgetManager will ignore any data in a column that does not "
                    "have a correct header. You can update the file path in the text box in the bottom left. "
                    "Simply go to the folder containing the file 'budgetmanager.csv', and paste the path into the box. "
                    "Do not add anything to the end.");
         mb.exec();
     }
+    if(sender == ui->saveButton){
+        //when we click this button, we want to write all NEW entries to the .csv file.
+        //so we need to be keeping track of all of the new entries. should we store them in a vector? why not.
+        //and then when we click this button, we can write it all, and then clear the vector so that if we click the button again,
+        //we don't write the stuff twice.
+        if(saveItems.size() == 0){
+            //dont do anything. idk
+        }else{
+            fw.WriteNewItems(saveItems, fr.GetFilePath(), fr.GetPriceC(), fr.GetNameC(), fr.GetDateC());
+            saveItems.clear();
+        }
+    }
+    if(sender == ui->saveHelp){
+        QMessageBox mb;
+        mb.setText("Saving will write all NEW entries to the budgetmanager.csv file. The next time you open "
+                   "the program and press 'load data', the data will be loaded, along with your previous"
+                   "new entries.");
+        mb.exec();
+    }
     if(sender == ui->budgetEdit){
-        qDebug() << "editing finished";
+        //qDebug() << "editing finished";
         FieldChecker fc;
         if(fc.IsValidNumber(ui->budgetEdit->text())){
             totalBudget = ui->budgetEdit->text().toDouble();
@@ -118,8 +124,6 @@ void MainWindow::DoSomething(QObject* sender){
             mb.critical(0, "Error", "Please enter a valid number in the 'Budget' field.");
             mb.setFixedSize(500, 200);
         }
-        //UpdateLabel(totalBudget);
-        //CalculateRemaining();
     }
     if(sender == ui->filePathEdit){
         //in the future, we could have this save the file path so we can remember it, but...
@@ -132,6 +136,7 @@ void MainWindow::PotentialEntry(bool add){
     if(add){
         qDebug() << "adding item.";
         AddItem(x->GetItem());
+        saveItems.push_back(x->GetItem());
     }else{
         qDebug() << "not adding item.";
     }
@@ -142,7 +147,6 @@ void MainWindow::PotentialEntry(bool add){
 void MainWindow::AddItem(Entry *e){
     items.push_back(e);
     AddToTable();
-    //everytime we add an item, we should also be updating the table. or just adding it to the table.
 }
 
 void MainWindow::PrintItems(){
@@ -188,7 +192,7 @@ void MainWindow::CalculateRemaining(){
 void MainWindow::closeEvent(QCloseEvent *event){
     qDebug() << "closing the main window. writing settings.";
     WriteSettings();
-    event->accept(); //still close the window.
+    event->accept(); //close the window
 }
 
 void MainWindow::WriteSettings(){

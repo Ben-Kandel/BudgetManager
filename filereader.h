@@ -24,6 +24,9 @@ public:
     vector<Entry*> GetLines();
     void UpdateFilePath(QString s);
     QString GetFilePath() const;
+    size_t GetPriceC() const;
+    size_t GetNameC() const;
+    size_t GetDateC() const;
 private:
     size_t price_;
     size_t name_;

@@ -11,9 +11,9 @@ class Entry
 public:
     Entry() = default;
     Entry(string p, string n, string d);
-    string GetPrice() const;
-    string GetName() const;
-    string GetDate() const;
+    string GetPrice();
+    string GetName();
+    string GetDate();
     friend ostream& operator<<(ostream& os, const Entry& e);
     void SetPrice(string p);
     void SetName(string n);

@@ -1,10 +1,6 @@
 #include "filereader.h"
 
 bool FileReader::ReadFile(){
-    //QString backPath = "";
-    //QString backPath = QDir().filePath("C:/Users/BenjaminK/Desktop/testing/");
-    //QString backPath = QDir().cleanPath("C:Uzers\BenjaminK\Desktop\testing");
-
     QFile f(backPath + "budgetmanager.csv");
     if(!f.open(QIODevice::ReadOnly)){
         qDebug() << f.errorString();
@@ -96,4 +92,16 @@ void FileReader::UpdateFilePath(QString s){
 
 QString FileReader::GetFilePath() const{
     return backPath;
+}
+
+size_t FileReader::GetDateC() const{
+    return date_;
+}
+
+size_t FileReader::GetNameC() const{
+    return name_;
+}
+
+size_t FileReader::GetPriceC() const{
+    return price_;
 }

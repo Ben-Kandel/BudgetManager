@@ -49,29 +49,14 @@ void NewEntryWindow::DoSomething(QObject* sender){
             mb.critical(0, "Error", "Please enter a valid number in the 'Price' field.");
             mb.setFixedSize(500, 200);
         }
-        /*
-        if(IsValidPrice(ui->priceEdit->text())){
-            CompleteItem();
-            emit(FinishOrCancel(true));
-        }else{
-            QMessageBox mb;
-            mb.critical(0, "Error", "Please enter a valid number in the 'Price' field.");
-            mb.setFixedSize(500, 200);
-        }
-        */
     }
 }
 
 void NewEntryWindow::CompleteItem(){
-    //we make an entry like = Entry* e = new Entry(double price, string name, string date)
+    //we make an entry like = Entry* e = new Entry(string price, string name, string date)
     string p = ui->priceEdit->text().toStdString();
     string name = ui->nameEdit->text().toStdString();
     string date = ui->dateEdit->text().toStdString();
-    /*
-    qDebug() << "Price: " << p;
-    qDebug() << "Name: " << ui->nameEdit->text();
-    qDebug() << "Date Purchased: " << ui->dateEdit->text();
-    */
     Entry* item = new Entry(p, name, date);
     currentitem = item;
 }

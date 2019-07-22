@@ -32,7 +32,8 @@ SOURCES += \
     button.cpp \
     customlineedit.cpp \
     fieldchecker.cpp \
-    filereader.cpp
+    filereader.cpp \
+    filewriter.cpp
 
 HEADERS += \
         mainwindow.h \
@@ -41,7 +42,8 @@ HEADERS += \
     button.h \
     customlineedit.h \
     fieldchecker.h \
-    filereader.h
+    filereader.h \
+    filewriter.h
 
 FORMS += \
         mainwindow.ui \
